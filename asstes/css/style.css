@@ -1,0 +1,9 @@
+.btn {
+    background-color: blue;
+}
+
+
+body {
+    background: url("../images/index.jpg") no-repeat center center fixed;
+	background-size: cover;
+}
