@@ -1,4 +1,7 @@
-var Movies = ["Cat", "Dog", "bird", "snake"];
+var topics = ["Cat", "Dog", "bird", "snake", "Elephant", " Horse", "Fish", "Wolf", "Hippopotamus",
+"Whales", "Turtle", "Giraffe", "Zebra", "Rhinoceros", "Kangaroo", "Leopard", "Dolphin", "Otter", "Duck",
+"Goat", "Aquirrel", "Raccoon", "Gorilla", "Shark", "Hyena", "Donkey", "Crocodile", "Eagle", "Lizard",
+"Parrot", "Panda", "Swans", "Badger", "mouse"];
 
 var TotalOfGIFs = 10;
 var Rating = "PG";
@@ -8,62 +11,61 @@ $(document).ready(function(){
 	printButtons();
 	$("#submit").on("click", function(){
 		event.preventDefault();
-		addButton($("#best-movies").val().trim());
-		$("#best-movies").val("");
+		addButton($("#best-animals").val().trim());
+		$("#best-animals").val("");
 	});
 });
 
 
 function printButtons(){
-	for(var i = 0; i < Movies.length; i++) {
+	for(var i = 0; i < topics.length; i++) {
 		var newButton = $("<button>");
 		newButton.addClass("btn");
-		newButton.addClass("movie-button");
-		newButton.attr("background", "blue")
-		newButton.text(Movies[i]);
+		newButton.addClass("animal-button");
+		newButton.text(topics[i]);
 		$("#button-container").append(newButton);
 	}
-	$(".movie-button").off("click");
+	$(".animal-button").off("click");
 
-	$(".movie-button").on("click", function(){
+	$(".animal-button").on("click", function(){
 		$(".gif-image").off("click");
 		$("#gif-container").empty();
 		$("#gif-container").removeClass("dotted-border");
-		populateGIFContainer($(this).text());
+		printGift($(this).text());
 	});
 
 }
 
-function addButton(selectedButtom){
-	if(Movies.indexOf(selectedButtom) === -1) {
-        Movies.push(selectedButtom);
-        console.log(Movies);
+function addButton(show){
+	if(topics.indexOf(show) === -1) {
+		topics.push(show);
 		$("#button-container").empty();
 		printButtons();
 	}
 }
 
-function populateGIFContainer(selectedButtom){
+function printGift(selectedButtom){
 	$.ajax({
         url: 'http://api.giphy.com/v1/gifs/search?q=' + selectedButtom + '&api_key=' + apiKey + '&limit=' + TotalOfGIFs,
 		method: "GET"
 	}).then(function(response){
-		for (var i=0; i<=10;i++){
+		response.data.forEach(function(element){
 			newDiv = $("<div>");
 			newDiv.addClass("individual-gif-container");
-			newDiv.append("<p>Rating: " + response.data[i].rating.toUpperCase() + "</p>");
-			var newImage = $("<img src = '" + response.data[i].images.fixed_height_still.url + "'>");
+			newDiv.append("<p>Rating: " + element.rating.toUpperCase() + "</p>");
+			var newImage = $("<img src = '" + element.images.fixed_height_still.url + "'>");
 			newImage.addClass("gif-image");
 			newImage.attr("state", "still");
-			newImage.attr("still-data", response.data[i].images.fixed_height_still.url);
-			newImage.attr("animated-data", response.data[i].images.preview_gif.url);
+			newImage.attr("still-data", element.images.fixed_height_still.url);
+			newImage.attr("animated-data", element.images.fixed_height.url);
 			newDiv.append(newImage);
 			$("#gif-container").append(newDiv);
-		};
+		});
 		
 		$("#gif-container").addClass("dotted-border");
 		$(".gif-image").off("click");
 		$(".gif-image").on("click", function(){
+			console.log("hola")
 			if($(this).attr("state") === "still") {
 				$(this).attr("state", "animated");
 				$(this).attr("src", $(this).attr("animated-data"));
